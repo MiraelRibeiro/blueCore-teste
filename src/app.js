@@ -3,6 +3,7 @@ const expressLayouts = require('express-ejs-layouts')
 const path = require('path')
 const cors = require('cors')
 const cookieParser = require('cookie-parser')
+const bodyParser = require('body-parser')
 
 const logger = require('./util/logger')
 const morgan = require('./middlewares/morgan')
@@ -15,6 +16,9 @@ app.set('view engine', 'ejs')
 
 app.use(morgan)
 app.use(cors())
+
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json())
 
 app.use(expressLayouts)
 app.use(express.static(path.join(__dirname, 'public')))

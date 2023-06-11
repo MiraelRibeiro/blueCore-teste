@@ -3,7 +3,7 @@ require('dotenv').config()
 module.exports = {
   client: 'sqlite3',
   connection: {
-    filename: "./src/database/db/bluecore.sqlite"
+    filename: './src/database/db/bluecore.sqlite'
   },
   pool: {
     min: 2,

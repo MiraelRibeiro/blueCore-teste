@@ -4,32 +4,37 @@
   <p>{{post.Content}}</p>
   <br>
   <h3>Comentários</h3>
-  <ul >
-    <!-- Utilize looping v-for do VueJs para exibir os comentários (título e conteúdo) de forma dinâmica -->
-    <li v-for="item in comments">      
-      <h5>{{item.UserName}}</h5>
-      <p>{{item.Comment}}</p>
-    </li>
-  </ul>
 
-  <div style="width: 100%; padding: 20px; align-items: start;">
-    <form onsubmit="getNewComment" method="get">
-        <div >
-            <label for="nome" style="font-size:large; font-weight: bold; display: block;">Nome do usuário</label>
-            <input style="width: 350px;" type="text" id="nome" name="name" placeholder="Digite seu nome:"/>
-        </div>
-        <p style="font-size: large; font-weight: bold;">Digite seu comentário abaixo:</p>
-        <div>
-            <textarea style="height: 120px; width: 350px; align-self:baseline;" rows="10" cols="20" id="comment" name="comment" ></textarea>
-        </div>
+  <div style="overflow: scroll; max-height: 800px;">
+    <ul >
+      <!-- Utilize looping v-for do VueJs para exibir os comentários (título e conteúdo) de forma dinâmica -->
+      <li v-for="item in comments">      
+        <h5>{{item.UserName}}</h5>
+        <p>{{item.Comment}}</p>
+      </li>
+    </ul>
 
-        <div style="height: 100px;">
-          <button type="submit" style="margin-right: 30px; color: blue;">Salvar</button>
-          <button type="reset" style="color: red;">Cancelar</button>        
-        </div >
-    </form>
-    
+    <div style="width: 100%; padding: 20px; align-items: start;" >
+      <form method="POST" @submit="getNewComment">
+          <div >
+              <label for="nome" style="font-size:large; font-weight: bold; display: block;">Nome do usuário</label>
+              <input style="width: 350px;" type="text" id="nome" name="name" placeholder="Digite seu nome:" required/>
+          </div>
+          <p style="font-size: large; font-weight: bold;">Digite seu comentário abaixo:</p>
+          <div>
+              <textarea style="height: 120px; width: 350px; align-self:baseline;" rows="10" cols="20" id="comment" name="comment" required></textarea>
+          </div>
+  
+          <div style="height: 100px;">
+            <button type="submit" style="margin-right: 30px; color: blue;" name="salvar" id="salvar">Salvar</button>
+            <button type="reset" style="color: red;">Cancelar</button>        
+          </div >
+      </form>
+      
+    </div>
   </div>
+
+  
 </section>
 
 <script>
@@ -61,16 +66,25 @@
         });
       },
       //implementando o form de comentario
-      getNewComment(){
+      async getNewComment(){
+        // a função aparentemente executa, porém há um problema de renderização da tela ao completar o submit do formulario
+        // não reconhece o method post e não volta para a amesma pagina, mas ao acessar a mesma os dados inseridos se encontram nela
         this.nome = document.getElementById("nome");
         this.newComment = document.getElementById("comment")
-        if (this.nome != "") {
-          console.log(this.nome);
-        } else {
-          console.log("Erro")
-        }
-      }
 
+        http.post("/comment/", {
+          id: postId,
+          user: this.nome.value,
+          comment: this.newComment.value
+        })
+        .then((response) => {
+          console.log(response)
+        }).catch(function (error) {
+          console.log(error);
+        });
+
+        location.reload()
+      }
     },
     mounted() {
       this.loadPost();

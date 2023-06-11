@@ -13,4 +13,12 @@ module.exports = class CommentController {
       .then((unities) => response.status(200).send(unities))
       .catch(next)
   }
+
+  static insertNewComment (request, response, next) {
+    const { id, user, comment } = request.body
+
+    CommentService.insertNewComment(id, user, comment)
+      .then((unities) => response.status(200).send(unities))
+      .catch(next)
+  }
 }
